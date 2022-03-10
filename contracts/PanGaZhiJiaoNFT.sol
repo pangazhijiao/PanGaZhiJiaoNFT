@@ -1,0 +1,115 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0; 
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "erc721a/contracts/ERC721A.sol";
+
+contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
+
+    string public baseURI = "https://raw.githubusercontent.com/The-OpenDAO/sos-membership-nft-contracts/main/metadata/json/";
+    string public blindURL = "https://raw.githubusercontent.com/The-OpenDAO/sos-membership-nft-contracts/main/metadata/json/0.json";
+    uint256 public constant priceOG = 0.02 ether;
+    uint256 public constant price = 0.04 ether;
+    uint8 public maxOGTMint = 3;
+    uint8 public maxPresaleMint = 2;
+    uint8 public maxPublicMint = 10;
+    uint256 public maxPresaleSupply = 1150;
+    uint256 public maxTokens = 2222;
+    bool public isPresaleActive = false;
+    bool public isPublicActive = false;
+    bool public isFreeMintActive = false;
+    bytes32 public presaleMerkleRoot;
+
+    mapping (address => uint256) public mintedForPresale;
+    mapping (address => uint256) public mintedForPublic;
+
+    constructor(bytes32 presaleRoot) 
+        ERC721A("Pan Ga Zhi Jiao", "PanGaZhiJiao")  {
+        presaleMerkleRoot = presaleRoot;
+    }
+
+    //Presale mint function
+    function mintPresale(uint256 numberOfTokens, uint8 tier, bytes32[] calldata proof) external payable {
+        require(isPresaleActive, "PRESALE_MINT_IS_NOT_YET_ACTIVE");
+        require(MerkleProof.verify(proof, presaleMerkleRoot, keccak256(abi.encodePacked(msg.sender, tier))), "INVALID_WHITELIST_PROOF");
+        if(tier == 0) {
+            require(mintedForPresale[msg.sender] + numberOfTokens <= maxOGTMint, "EXCEEDS_MAX_OG_MINT" );
+            require(msg.value == priceOG * numberOfTokens, "INSUFFICIENT_OG_PAYMENT");
+        } else {
+            require(mintedForPresale[msg.sender] + numberOfTokens <= maxPresaleMint, "EXCEEDS_MAX_PRESALE_MINT" ); 
+            require(msg.value == price * numberOfTokens, "INSUFFICIENT_PRESALE_PAYMENT");
+        }
+        require(totalSupply() + numberOfTokens <= maxPresaleSupply, "EXCEEDS_MAX_PRESALE_SUPPLY" );
+        
+        mintedForPresale[msg.sender] += numberOfTokens;
+        _safeMint( msg.sender, numberOfTokens);
+    }
+
+    //Public mint function
+    function mintPublicSale(uint256 numberOfTokens) external payable {
+        require(isPublicActive, "PUBLIC_SALE_MINT_IS_NOT_YET_ACTIVE");
+        require(msg.value == price * numberOfTokens, "INSUFFICIENT_PUBLIC_PAYMENT");
+        require(mintedForPublic[msg.sender] + numberOfTokens <= maxPublicMint, "EXCEEDS_MAX_PUBLIC_MINT" );
+        require(totalSupply() + numberOfTokens <= maxTokens, "EXCEEDS_MAX_SUPPLY" );
+
+        mintedForPublic[msg.sender] += numberOfTokens;
+        _safeMint( msg.sender, numberOfTokens);
+    }
+
+    //Free mint function
+    function mintFreeSale(uint256 numberOfTokens) external payable {
+        require(isFreeMintActive, "FREE_SALE_MINT_IS_NOT_YET_ACTIVE");
+        require(msg.value == 0, "INSUFFICIENT_FREESALE_PAYMENT");
+        require(totalSupply() + numberOfTokens <= maxTokens, "EXCEEDS_MAX_SUPPLY" );
+        _safeMint( msg.sender, numberOfTokens);
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
+    }
+
+    function tokenURI(uint256 _tokenId) public view returns (string memory) {
+        return blindURL;
+    }
+
+    // SETTER FUNCTIONS
+    function setBaseURI(string memory newBaseURI) external onlyOwner {
+        baseURI = newBaseURI;
+    }
+
+    function setPresaleMerkleRoot(bytes32 presaleRoot) external onlyOwner {
+        presaleMerkleRoot = presaleRoot;
+    }
+
+    function setMaxPresaleMint(uint8 _maxPresaleMint) external onlyOwner {
+        maxPresaleMint = _maxPresaleMint;
+    }
+
+    function setMaxPresaleMintSupply(uint256 _maxPresaleMintSupply) external onlyOwner {
+        maxPresaleSupply = _maxPresaleMintSupply;
+    }
+
+    // TOGGLES
+    function togglePublicSaleActive() external onlyOwner {
+        isPublicActive = !isPublicActive;
+    }
+
+    function togglePresaleActive() external onlyOwner {
+        isPresaleActive = !isPresaleActive;
+    }
+
+    function toggleFreeMintActive() external onlyOwner {
+        isFreeMintActive = !isFreeMintActive;
+    }
+
+    // Withdraw Ether
+    function withdraw() external onlyOwner {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No balance to withdraw");
+
+        (bool success, ) = payable(msg.sender).call{value: balance}("");
+        require(success, "Failed to withdraw payment");
+    }
+}

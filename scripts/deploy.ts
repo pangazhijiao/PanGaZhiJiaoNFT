@@ -6,7 +6,7 @@ async function main() {
 
   const merkleRoot = "0xac7bed30976a9e81a333313a62bf9fc12c479b9250fc39f0fa061bf5fc2e0383";
   const endTime = 0;
-  const url = "https://raw.githubusercontent.com/The-OpenDAO/sos-membership-nft-contracts/main/metadata/json/";
+  const url = "";
 
   const nft = await nftFactory.deploy(
     merkleRoot);

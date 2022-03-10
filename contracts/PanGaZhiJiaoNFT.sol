@@ -8,8 +8,8 @@ import "erc721a/contracts/ERC721A.sol";
 
 contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
 
-    string public baseURI = "https://raw.githubusercontent.com/The-OpenDAO/sos-membership-nft-contracts/main/metadata/json/";
-    string public blindURL = "https://raw.githubusercontent.com/The-OpenDAO/sos-membership-nft-contracts/main/metadata/json/0.json";
+    string public baseURI = "";
+    string public blindURL = "";
     uint256 public constant priceOG = 0.02 ether;
     uint256 public constant price = 0.04 ether;
     uint8 public maxOGTMint = 3;

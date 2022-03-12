@@ -70,7 +70,7 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
         return baseURI;
     }
 
-    function tokenURI(uint256 _tokenId) public view returns (string memory) {
+    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
         return blindURL;
     }
 

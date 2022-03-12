@@ -1,5 +1,4 @@
 import { ethers } from "hardhat";
-import { run } from "hardhat"
 
 async function main() {
   const nftFactory = await ethers.getContractFactory("PanGaZhiJiaoNFT");

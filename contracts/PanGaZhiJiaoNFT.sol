@@ -8,7 +8,7 @@ import "erc721a/contracts/ERC721A.sol";
 
 contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
 
-    string public baseURI = "";
+    string public baseURI = "https://raw.githubusercontent.com/pangazhijiao/PanGaZhiJiaoNFT/master/metadata/json/";
     string public blindURL = "https://raw.githubusercontent.com/pangazhijiao/PanGaZhiJiaoNFT/master/metadata/json/nonreveal.json";
     uint256 public constant priceOG = 0.02 ether;
     uint256 public constant price = 0.04 ether;
@@ -18,8 +18,9 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
     uint256 public maxPresaleSupply = 1150;
     uint256 public maxTokens = 2222;
     bool public isPresaleActive = false;
-    bool public isPublicActive = true;
+    bool public isPublicActive = false;
     bool public isFreeMintActive = false;
+    bool public isRevealActive = false;
     bytes32 public presaleMerkleRoot;
 
     mapping (address => uint256) public mintedForPresale;
@@ -70,8 +71,13 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
         return baseURI;
     }
 
-    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
-        return blindURL;
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        if(!isRevealActive) {return blindURL;}
+        string memory currentBaseURI = _baseURI();
+        return bytes(currentBaseURI).length > 0
+            ? string(abi.encodePacked(currentBaseURI, Strings.toString(tokenId)))
+            : "";
     }
 
     // SETTER FUNCTIONS
@@ -102,6 +108,10 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
 
     function toggleFreeMintActive() external onlyOwner {
         isFreeMintActive = !isFreeMintActive;
+    }
+
+    function toggleRevealActive() external onlyOwner {
+        isRevealActive = !isRevealActive;
     }
 
     // Withdraw Ether

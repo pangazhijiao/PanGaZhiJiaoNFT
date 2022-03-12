@@ -18,7 +18,7 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
     uint256 public maxPresaleSupply = 1150;
     uint256 public maxTokens = 2222;
     bool public isPresaleActive = false;
-    bool public isPublicActive = false;
+    bool public isPublicActive = true;
     bool public isFreeMintActive = false;
     bytes32 public presaleMerkleRoot;
 

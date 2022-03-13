@@ -13,7 +13,7 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
     uint256 public constant priceOG = 0.02 ether;
     uint256 public constant priceWL = 0.04 ether;
     uint256 public constant price = 0.05 ether;
-    uint8 public maxOGTMint = 3;
+    uint8 public maxOGTMint = 1;
     uint8 public maxPresaleMint = 2;
     uint8 public maxPublicMint = 10;
     uint256 public maxPresaleSupply = 1150;

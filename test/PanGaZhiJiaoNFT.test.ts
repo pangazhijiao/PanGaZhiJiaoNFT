@@ -99,7 +99,7 @@ describe("PanGaZhiJiaoNFT", function () {
       const nft = await setupContract(tree.root);
       await nft.togglePresaleActive();
       const minterInfo = tree.proofs[alice.address];
-      await nft.connect(alice).mintPresale(3, 0, minterInfo.proofs, { value: ethers.utils.parseEther("0.06")});
+      await nft.connect(alice).mintPresale(1, 0, minterInfo.proofs, { value: ethers.utils.parseEther("0.02")});
     });
   });
 

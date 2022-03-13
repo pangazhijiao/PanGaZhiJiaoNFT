@@ -11,7 +11,8 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
     string public baseURI = "https://raw.githubusercontent.com/pangazhijiao/PanGaZhiJiaoNFT/master/metadata/json/";
     string public blindURL = "https://raw.githubusercontent.com/pangazhijiao/PanGaZhiJiaoNFT/master/metadata/json/nonreveal.json";
     uint256 public constant priceOG = 0.02 ether;
-    uint256 public constant price = 0.04 ether;
+    uint256 public constant priceWL = 0.04 ether;
+    uint256 public constant price = 0.05 ether;
     uint8 public maxOGTMint = 3;
     uint8 public maxPresaleMint = 2;
     uint8 public maxPublicMint = 10;
@@ -40,7 +41,7 @@ contract PanGaZhiJiaoNFT is Ownable, ERC721A, ReentrancyGuard {
             require(msg.value == priceOG * numberOfTokens, "INSUFFICIENT_OG_PAYMENT");
         } else {
             require(mintedForPresale[msg.sender] + numberOfTokens <= maxPresaleMint, "EXCEEDS_MAX_PRESALE_MINT" ); 
-            require(msg.value == price * numberOfTokens, "INSUFFICIENT_PRESALE_PAYMENT");
+            require(msg.value == priceWL * numberOfTokens, "INSUFFICIENT_PRESALE_PAYMENT");
         }
         require(totalSupply() + numberOfTokens <= maxPresaleSupply, "EXCEEDS_MAX_PRESALE_SUPPLY" );
         

@@ -107,7 +107,7 @@ describe("PanGaZhiJiaoNFT", function () {
     it("public mint not active", async function test() {
       const nft = await setupContract(tree.root);
       const minterInfo = tree.proofs[alice.address];
-      await expect(nft.connect(alice).mintPublicSale(1, { value: ethers.utils.parseEther("0.04")}))
+      await expect(nft.connect(alice).mintPublicSale(1, { value: ethers.utils.parseEther("0.05")}))
         .to.be.revertedWith("PUBLIC_SALE_MINT_IS_NOT_YET_ACTIVE");
     });
 
@@ -115,7 +115,7 @@ describe("PanGaZhiJiaoNFT", function () {
       const nft = await setupContract(tree.root);
       await nft.togglePublicSaleActive();
       const minterInfo = tree.proofs[eric.address];
-      await nft.connect(eric).mintPublicSale(1, { value: ethers.utils.parseEther("0.04")});
+      await nft.connect(eric).mintPublicSale(1, { value: ethers.utils.parseEther("0.05")});
     });
   });
 

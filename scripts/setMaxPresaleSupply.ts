@@ -4,13 +4,13 @@ async function main() {
   const nftFactory = await ethers.getContractFactory("PanGaZhiJiaoNFT");
   const nft = nftFactory.attach(process.env.CONTRACT_ADDRESS as any);
 
-  console.log("Current merkle root: %s", await nft.presaleMerkleRoot());
+  console.log("Current presale max supply: %s", await nft.maxPresaleSupply());
 
-  const tx = await nft.setPresaleMerkleRoot("0x7c56f5805c76f45f5c0a6001a13a7b9510c160a37eb43592ca0b2254f80009ac");
+  const tx = await nft.setMaxPresaleMintSupply(2222);
   console.log("Tx: %s", tx.hash);
 
   await tx.wait();
-  console.log("Merkle root is set to: %s", await nft.presaleMerkleRoot());
+  console.log("Presale supply is set to: %s", await nft.maxPresaleSupply());
 }
 
 main().catch((error) => {

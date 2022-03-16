@@ -12,6 +12,8 @@ async function main() {
   console.log("isPublicActive:%s", ispublic.toString());
   let isfree = await nft.isFreeMintActive();
   console.log("isFreeMintActive:%s", isfree.toString());
+  let isreveal = await nft.isRevealActive();
+  console.log("isRevealActive:%s", isreveal.toString());
 }
 
 main().catch((error) => {
